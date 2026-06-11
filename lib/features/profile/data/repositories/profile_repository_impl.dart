@@ -34,9 +34,9 @@ class ProfileRepositoryImpl implements ProfileRepository {
   }
 
   @override
-  Future<(String?, Failure?)> uploadAvatar(String filePath) async {
+  Future<(String?, Failure?)> uploadAvatar({required String userId, required String filePath}) async {
     try {
-      final url = await _remote.uploadAvatar(userId: filePath, filePath: filePath);
+      final url = await _remote.uploadAvatar(userId: userId, filePath: filePath);
       return (url, null);
     } on ServerException catch (e) {
       return (null, ServerFailure(e.message ?? 'Upload failed'));

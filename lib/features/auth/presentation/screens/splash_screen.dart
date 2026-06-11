@@ -19,7 +19,6 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> _navigate() async {
-    await Future.delayed(const Duration(milliseconds: 1800));
     if (!mounted) return;
     final onboarded = await SecureStorageService.isOnboarded();
     if (onboarded) {
