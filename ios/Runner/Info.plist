@@ -56,15 +56,21 @@
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 		<string>UIInterfaceOrientationPortraitUpsideDown</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Nearo uses your location to show people and plans near you.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Nearo uses your location to show people and plans near you.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Nearo needs camera access to let you add photos to your profile and plans.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Nearo needs photo library access to let you upload images.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Nearo needs permission to save photos to your library.</string>
 </dict>
 </plist>

@@ -43,6 +43,42 @@ class Plan extends Equatable {
     required this.createdAt,
   });
 
+  factory Plan.fromJson(Map<String, dynamic> json) => Plan(
+        id: json['id'] as String,
+        title: json['title'] as String,
+        category: PlanCategory.values.firstWhere(
+          (e) => e.name == json['category'],
+          orElse: () => PlanCategory.other,
+        ),
+        description: json['description'] as String?,
+        organizerId: json['organizer_id'] as String,
+        areaName: json['area_name'] as String,
+        datetime: DateTime.parse(json['datetime'] as String),
+        spotsNeeded: json['spots_needed'] as int,
+        spotsFilled: json['spots_filled'] as int? ?? 0,
+        status: PlanStatus.values.firstWhere(
+          (e) => e.name == json['status'],
+          orElse: () => PlanStatus.draft,
+        ),
+        expiresAt: json['expires_at'] != null ? DateTime.parse(json['expires_at'] as String) : null,
+        createdAt: DateTime.parse(json['created_at'] as String),
+      );
+
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'title': title,
+        'category': category.name,
+        'description': description,
+        'organizer_id': organizerId,
+        'area_name': areaName,
+        'datetime': datetime.toIso8601String(),
+        'spots_needed': spotsNeeded,
+        'spots_filled': spotsFilled,
+        'status': status.name,
+        'expires_at': expiresAt?.toIso8601String(),
+        'created_at': createdAt.toIso8601String(),
+      };
+
   @override
   List<Object?> get props => [id, title, status, spotsFilled, spotsNeeded];
 }
