@@ -22,3 +22,28 @@ workflows:
         notify:
           success: true
           failure: true
+
+  ios-unsigned:
+    name: iOS Unsigned IPA (for AltStore)
+    max_build_duration: 60
+    environment:
+      flutter: stable
+      xcode: 15.4
+    scripts:
+      - name: Get packages
+        script: flutter pub get
+      - name: Build iOS unsigned
+        script: |
+          flutter build ios --debug --no-codesign
+          mkdir -p Payload
+          cp -r build/ios/iphoneos/Runner.app Payload/Runner.app
+          zip -r nearo-unsigned.ipa Payload
+    artifacts:
+      - nearo-unsigned.ipa
+    publishing:
+      email:
+        recipients:
+          - himanshu77.app@gmail.com
+        notify:
+          success: true
+          failure: true
