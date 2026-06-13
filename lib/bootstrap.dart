@@ -24,10 +24,24 @@ Future<void> bootstrap({required String environment}) async {
   ));
 
   // Load env
-  await dotenv.load(fileName: 'env/.env.$environment');
+  try {
+    await dotenv.load(fileName: 'env/.env.$environment');
+  } catch (e) {
+    if (kDebugMode) debugPrint('[Nearo] No env file — running with static UI only');
+  }
 
-  // Init Supabase
-  await SupabaseConfig.initialize();
+  // Init Supabase (skip if no real credentials)
+  try {
+    final url = dotenv.env['SUPABASE_URL'] ?? '';
+    final key = dotenv.env['SUPABASE_ANON_KEY'] ?? '';
+    if (url.isNotEmpty && !url.contains('placeholder')) {
+      await SupabaseConfig.initialize();
+    } else {
+      if (kDebugMode) debugPrint('[Nearo] Supabase skipped — placeholder credentials');
+    }
+  } catch (e) {
+    if (kDebugMode) debugPrint('[Nearo] Supabase init skipped: $e');
+  }
 
   if (kDebugMode) {
     debugPrint('[Nearo] Bootstrap complete · env=$environment');

@@ -20,7 +20,13 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future<void> _navigate() async {
     if (!mounted) return;
-    final onboarded = await SecureStorageService.isOnboarded();
+    bool onboarded = false;
+    try {
+      onboarded = await SecureStorageService.isOnboarded();
+    } catch (_) {
+      onboarded = false;
+    }
+    if (!mounted) return;
     if (onboarded) {
       context.go(AppRoutes.plans);
     } else {
