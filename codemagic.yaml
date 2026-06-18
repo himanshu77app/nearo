@@ -1,0 +1,114 @@
+workflows:
+
+  # ─────────────────────────────────────────────
+  # ANDROID — Debug APK (no signing needed)
+  # ─────────────────────────────────────────────
+  android-debug:
+    name: Android Debug APK
+    max_build_duration: 60
+    environment:
+      flutter: stable
+    cache:
+      cache_paths:
+        - $FLUTTER_ROOT/.pub-cache
+        - $HOME/.gradle/caches
+    scripts:
+      - name: Get packages
+        script: flutter pub get
+      - name: Build APK
+        script: flutter build apk --debug
+    artifacts:
+      - build/app/outputs/apk/debug/app-debug.apk
+    publishing:
+      email:
+        recipients:
+          - himanshu77.app@gmail.com
+        notify:
+          success: true
+          failure: true
+
+  # ─────────────────────────────────────────────
+  # iOS — Unsigned IPA (sideload via AltStore)
+  # No Apple Developer account needed
+  # ─────────────────────────────────────────────
+  ios-unsigned:
+    name: iOS Unsigned IPA
+    max_build_duration: 60
+    environment:
+      flutter: stable
+      xcode: 16.2
+      cocoapods: default
+    cache:
+      cache_paths:
+        - $FLUTTER_ROOT/.pub-cache
+        - $HOME/Library/Caches/CocoaPods
+    scripts:
+      - name: Get packages
+        script: flutter pub get
+      - name: Install CocoaPods
+        script: |
+          cd ios
+          pod install
+          cd ..
+      - name: Build iOS unsigned
+        script: |
+          flutter build ios --release --no-codesign
+      - name: Package into IPA
+        script: |
+          mkdir -p Payload
+          cp -r build/ios/iphoneos/Runner.app Payload/Runner.app
+          zip -r nearo-unsigned.ipa Payload
+          rm -rf Payload
+    artifacts:
+      - nearo-unsigned.ipa
+    publishing:
+      email:
+        recipients:
+          - himanshu77.app@gmail.com
+        notify:
+          success: true
+          failure: true
+
+  # ─────────────────────────────────────────────
+  # BOTH — Android + iOS in one build
+  # ─────────────────────────────────────────────
+  both-platforms:
+    name: Android APK + iOS IPA
+    max_build_duration: 90
+    environment:
+      flutter: stable
+      xcode: 16.2
+      cocoapods: default
+    cache:
+      cache_paths:
+        - $FLUTTER_ROOT/.pub-cache
+        - $HOME/.gradle/caches
+        - $HOME/Library/Caches/CocoaPods
+    scripts:
+      - name: Get packages
+        script: flutter pub get
+      - name: Install CocoaPods
+        script: |
+          cd ios
+          pod install
+          cd ..
+      - name: Build Android APK
+        script: flutter build apk --debug
+      - name: Build iOS unsigned
+        script: flutter build ios --debug --no-codesign
+      - name: Package iOS into IPA
+        script: |
+          mkdir -p Payload
+          cp -r build/ios/iphoneos/Runner.app Payload/Runner.app
+          zip -r nearo-unsigned.ipa Payload
+          rm -rf Payload
+    artifacts:
+      - build/app/outputs/apk/debug/app-debug.apk
+      - nearo-unsigned.ipa
+    publishing:
+      email:
+        recipients:
+          - himanshu77.app@gmail.com
+        notify:
+          success: true
+          failure: true
